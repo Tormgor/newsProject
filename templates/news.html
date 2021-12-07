@@ -1,0 +1,63 @@
+{% extends 'flatpages/default.html' %}
+
+{% load news_filters %}
+
+{% block title %}
+Post
+{% endblock title %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        {% if is_not_author %}
+        <p align="right"> <button> <a class="nav-link" href="/sign/author/">Стать автором</a> </button> </p>
+        {% else %}
+        <p align="right">Пользователь является автором новостей</p>
+        {% endif %}
+
+    {% endif %}
+    <h3>Последние публикации</h3>
+    <br>
+    {% if postList %}
+        <ul>
+        {% for record in postList %}
+            <hr>
+            <li>
+                <p align="left">
+                    Дата публикации: {{ record.created }}<br>Автор: {{ record.id_author }}
+                </p>
+                <p>
+                    <a class="nav-link" href="/post/{{ record.pk }}">{{ record.header|censor }}</a>
+                </p>
+                <p>
+                    {{ record.text|truncatechars:50|censor }}
+                </p>
+            </li>
+        {% endfor %}
+        </ul>
+        <hr>
+        {% if is_paginated %}
+            {% if page_obj.has_previous %}
+                <a href="?page=1">В начало</a>
+                <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a>{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">>>></a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">В конец</a>
+            {% endif %}
+
+        {% endif %}
+
+    {% else %}
+        <h3>Новостей нет =(</h3>
+    {% endif %}
+
+{% endblock content %}

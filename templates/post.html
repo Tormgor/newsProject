@@ -1,0 +1,17 @@
+{% extends 'flatpages/default.html' %}
+
+{% load news_filters %}
+
+{% block title %}
+Post
+{% endblock title %}
+
+{% block content %}
+<h3>{{ postView.header|censor }}</h3>
+<u>{{ postView.created|date:'d-m-Y H:i' }}</u>
+<hr>
+<div align="left"><a class="nav-link" href="../news/edit/{{ postView.pk }}">Редактировать</a></div>
+<div align="left"><a class="nav-link" href="../news/delete/{{ postView.pk }}">Удалить</a></div>
+<hr>
+<p align="justify">{{ postView.text|censor }}</p>
+{% endblock content %}
