@@ -55,9 +55,9 @@ class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
             postCategory = PostCategory(id_post=post, id_category=Category.objects.get(pk=id))
             postCategory.save()
 
-#        subject = f'{post.created.strftime("%Y-%M-%d")} вами создана новая новость!'
-#       content = render_to_string('post_created.html', {'post': post, })
-#        email = request.user.email
+        subject = f'{post.created.strftime("%Y-%M-%d")} вами создана новая новость!'
+        content = render_to_string('post_created.html', {'post': post, })
+        email = request.user.email
 
         # Отправка уведомлений о новой статье через Celery
 #        new_post_notification.delay(subject, email, content)
