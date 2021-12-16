@@ -14,7 +14,7 @@ class Author(models.Model):
         post_list = Post.objects.filter(id_author=self, type=Post.article)
 
         post_rating_list = post_list.values("rating")
-        result = 3 * (sum(item["rating"] for item in post_rating_list) )
+        result = 3 * (sum(item["rating"] for item in post_rating_list))
 
         comment_rating_list = Comment.objects.filter(id_user=user).values("rating")
         result += sum(item["rating"] for item in comment_rating_list)
