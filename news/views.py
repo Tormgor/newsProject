@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from .forms import CreatePostForm, BasePostForm
 from .tasks import new_post_notification
 from django.shortcuts import redirect
+from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 
 
