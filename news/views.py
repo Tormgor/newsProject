@@ -38,12 +38,11 @@ class PostView(DetailView):
     context_object_name = 'postView'
 
     def get_object(self, *args, **kwargs):
-        obj = cache.get(f'product-{self.kwargs["pk"]}', None)
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
 
         if not obj:
-            obj = super().get_object(queryset=kwargs['queryset'])
-            cache.set(f'product-{self.kwargs["pk"]}', obj)
-
+            obj = super().get_object(**kwargs)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
         return obj
 
 
