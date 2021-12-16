@@ -5,3 +5,7 @@ django-filter
 django-allauth
 celery
 redis
+
+Суперюзер
+admin
+admin
