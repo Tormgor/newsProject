@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from .forms import CreatePostForm, BasePostForm
 from .tasks import new_post_notification
 from django.shortcuts import redirect
+from django.views.decorators.cache import cache_page
 
 
 class PostList(ListView):
@@ -36,6 +37,15 @@ class PostView(DetailView):
     template_name = 'post.html'
     context_object_name = 'postView'
 
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'product-{self.kwargs["pk"]}', None)
+
+        if not obj:
+            obj = super().get_object(queryset=kwargs['queryset'])
+            cache.set(f'product-{self.kwargs["pk"]}', obj)
+
+        return obj
+
 
 class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = ('news.add_post',
@@ -55,12 +65,12 @@ class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
             postCategory = PostCategory(id_post=post, id_category=Category.objects.get(pk=id))
             postCategory.save()
 
-#        subject = f'{post.created.strftime("%Y-%M-%d")} вами создана новая новость!'
-#       content = render_to_string('post_created.html', {'post': post, })
-#        email = request.user.email
+        subject = f'{post.created.strftime("%Y-%M-%d")} вами создана новая новость!'
+        content = render_to_string('post_created.html', {'post': post, })
+        email = request.user.email
 
         # Отправка уведомлений о новой статье через Celery
-#        new_post_notification.delay(subject, email, content)
+        new_post_notification.delay(subject, email, content)
 
         return redirect('/news/')
 

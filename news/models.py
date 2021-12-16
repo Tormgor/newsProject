@@ -74,6 +74,10 @@ class Post(models.Model):
     def get_absolute_url(self):
         return f'/post/{self.id}'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(f'post-{self.pk}')
+
 
 class PostCategory(models.Model):
     id_post = models.ForeignKey(Post, on_delete=models.CASCADE)
